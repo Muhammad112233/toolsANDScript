@@ -1,0 +1,128 @@
+----------installation of GCC and CLANG-----------------
+
+--we installed both packages via source
+--first download gcc.9.version from github
+
+--requirements can be download from--
+gmp => 4.2			https://gmplib.org
+mpfr => 2.4			https://mpfr.org
+mpc => 0.8			https://ftp.gnu.org/gnu/mpc
+isl => 0.15			https://http://isl.gforge.inria.fr
+
+--unzip package
+--e.g
+
+root@cd gmp.6.2.0/gmp.6.2.0/
+root@ls -ltr
+
+--there must be file name "configure"
+--if it is not download from another site
+
+chmod +x *
+chmod +x */*
+./configure
+make
+make check
+make install
+
+--most of packages are compile with only three commands
+--./configure
+--make
+--make install
+
+
+--requirements have been installed
+--now unzip gcc9
+
+cd gcc-9.2.0/gcc-9.2.0/
+chmod +x *
+chmod +x */*
+./configure -disable-multilib
+make
+make install
+
+--export path to gcc in .bashrc
+
+nano .bashrc
+
+export PATH=$PATH:/usr/local/lib/gcc:/usr/local/bin/gcc:/usr/local/bin/c++:/usr/local/include/c++
+
+--type "gcc --version" in command line
+--if it shows the install version of gcc then it installed successfully
+
+----install llvm-9.0.1
+
+--requirements can be download from--
+glibc			http://ftp.gnu.org/gnu/glibc
+libEdit			https://codeload.github.com/cdesjardins/libedit
+swig			https://liquidtelecom.dl.sourceforge.net/project/swig
+doxygen			https://mirror.centos.org
+xz-utils		------------------------
+graphviz		------------------------
+libncurses5-dev		------------------------
+subversion		------------------------
+python-sphinx		https://centos.pkgs.org
+ocaml			------------------------
+z3			https://opam.ocaml.org
+epydoc  		-----------------------
+libffi-devel 		-----------------------
+libelf			-----------------------
+CUDA-DRIVER		https://developer.nvidia.com/CUDA-Toolkit
+
+
+--download llvm and its core packages from
+
+https://github-production-release-asset-2e65be.s3.amazonaws.com
+
+
+--rename the all packages
+
+--place packages under different directories of llvm
+
+mv clang llvm/tools
+
+--unzip all packages and rename like above
+
+mv lldb llvm/projects
+mv libcxx llvm/projects
+mv compiler-rt llvm/projects
+mv libcxxabi llvm/projects
+mv openmp llvm/projects
+mv polly llvm/projects
+mv libunwind llvm/projects
+mv lld llvm/projects
+
+--now all core packages are under llvm
+--now build it
+
+mkdir llvm/build
+cd build
+cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DLLVM_BUILD_DOCS=OFF ../
+
+
+--if it is shows an error e.g
+Error:
+swig: /lib64/swig: /lib64/libstdc++.so.6: version `GLIBCXX_3.4.20' not found (required by swig)
+swig: /lib64/swig: /lib64/libstdc++.so.6: version `GLIBCXX_3.4.21' not found (required by swig)
+
+--then solve error through simlink e.g
+
+find / -name libstdc++.so.6
+
+--it shows the location "/usr/lib" or "/usr/lib64" or "/usr/local/lib" or "/usr/local/lib64"
+--there must be another file similar to 'libstdc++.so' but different version maybe 20,21 or 27
+--just simlink greater version libstdc++ to old one
+
+
+rm -rf /usr/lib64/libstdc++.so.6
+ln -s /usr/lib64/libstdc++.so.6.0.21 /usr/lib64/libstdc++.so.6
+
+--run previous command again
+--after successfully build, run
+
+make -d -j 4
+
+--where -d is for debug and -j is for number of jobs(depending on CPU Cores)
+
+--it will take more than 3 hours to  complete
+  
